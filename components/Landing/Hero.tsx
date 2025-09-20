@@ -15,7 +15,7 @@ export function Hero() {
               <ArrowDownRight className="ml-2 size-4" />
             </Badge>
             <h1 className="my-6 text-pretty text-4xl font-bold lg:text-6xl">
-              Your Journey to Mastery Starts Here!
+              Micromentoring for the Masses{' '}
             </h1>
             <p className="mb-8 max-w-xl text-muted-foreground lg:text-xl">
               Connect with verified mentors, access exclusive resources, and take your skills to the next level.
