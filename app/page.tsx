@@ -22,10 +22,11 @@ export default function Home() {
         return await fetch('/api/mentor/create',
         {method: 'POST',
         body: JSON.stringify({
-          userId: '1237',
-          username: 'testuser3',
-          name: 'Test User3',
-          status: 'active1'
+          // userId: '1233',
+          email: 'testuseqwer1234@example.com',
+          username: 'testus1wqe234173812',
+          name: 'Test 12wqe3123',
+          // status: 'TEACHING'
           })})}}>x
       </Button>
 

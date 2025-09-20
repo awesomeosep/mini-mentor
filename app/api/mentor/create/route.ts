@@ -3,34 +3,31 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const req = await request.json();
-    const userId = req.userId;
+    // const userId = req.userId;
     const username = req.username;
     const name = req.name;
-    const status = req.status;
+    // const status = req.status;
+    const email = req.email;
 
     const user = {
-        userid: userId,
-        username: username,
-        name: name,
-        status: status,
-        join_date: new Date(),
-        ban_date: null,
-        ban_reason: ""
-    }
-
+      // userid: userId,
+      username: username,
+      email: email,
+      name: name,
+      status: "TEACHING",
+      join_date: new Date(),
+      ban_date: null,
+      ban_reason: '',
+    };
 
     const supabase = await createClient();
-    const { data, error } = await supabase
-      .from('profile')
-      .insert(user)
-      .select('*')
-      .single();
+    const { data, error } = await supabase.from('users').insert(user).select('*').single();
+    console.log(error);
     if (error) return NextResponse.json({ error }, { status: 500 });
     return NextResponse.json(data);
-    }
-    catch (err) {
-        return NextResponse.json(JSON.stringify(err), { "status": 500 });
-    }
+  } catch (err) {
+    return NextResponse.json(JSON.stringify(err), { status: 500 });
+  }
 }
 // app/api/listings/route.ts
 // import { NextResponse } from 'next/server';
@@ -77,8 +74,3 @@ export async function POST(request: Request) {
 //   if (error) return NextResponse.json({ error }, { status: 500 });
 //   return NextResponse.json(data);
 // }
-
-
-
-
-
