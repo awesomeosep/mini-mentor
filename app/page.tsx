@@ -109,6 +109,23 @@ export default function Home() {
         Match
       </Button>
 
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/match/update', {
+            method: 'POST',
+            body: JSON.stringify({
+              newStatus: 'PLANNED',
+              matchId: 'ea5a6b40-e9d7-4ee3-b43c-ed5368ebe556',
+            }),
+          });
+        }}
+      >
+        Update Match
+      </Button>
+
       <Benefits data={benefitOne} />
       <Benefits imgPos="right" data={benefitTwo} />
 
