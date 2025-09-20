@@ -123,6 +123,25 @@ export default function Home() {
         Get Matches
       </Button>
 
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/listings/report', {
+            method: 'POST',
+            body: JSON.stringify({
+              thread_type: 'mentor',
+              listing_id: 'af24b61f-074b-40d3-82ea-04ed72e6d350',
+              report_reason_class: 'hello hello',
+              report_reason_text: 'hi hi'
+            }),
+          });
+        }}
+      >
+        report
+      </Button>
+
       <Benefits data={benefitOne} />
       <Benefits imgPos="right" data={benefitTwo} />
 
