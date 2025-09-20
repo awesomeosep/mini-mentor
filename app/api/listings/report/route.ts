@@ -14,8 +14,8 @@ export async function POST(request: Request) {try {
     const submitter_id = user!.id;
     const listing_id = req.listing_id;
     const thread_type = req.thread_type;
-    const thread_id = req.thread_id;
-    const submitted_time = req.submitted_time;
+    // const thread_id = req.thread_id;
+    // const submitted_time = req.submitted_time;
     const report_reason_class = req.report_reason_class;
     const report_reason_text = req.report_reason_text;
 
