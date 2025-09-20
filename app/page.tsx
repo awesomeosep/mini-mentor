@@ -1,3 +1,5 @@
+"use client";
+
 import { Container } from '@/components/Landing/Container';
 import { Hero } from '@/components/Landing/Hero';
 import { SectionTitle } from '@/components/Landing/SectionTitle';
@@ -6,6 +8,7 @@ import { Faq } from '@/components/Landing/Faq';
 
 import { benefitOne, benefitTwo } from '@/components/Landing/data';
 import { Cta } from '@/components/Landing/Cta';
+import { Button } from '@/components/ui/button';
 export default function Home() {
   return (
     <Container className="flex flex-col gap-16">
@@ -14,6 +17,17 @@ export default function Home() {
         Nextly is a free landing page & marketing website template for startups and indie projects.
         Its built with Next.js & TailwindCSS. And its completely open-source.
       </SectionTitle>
+      
+      <Button variant="secondary" size="lg" className="w-48 mx-auto" onClick={async () => {
+        return await fetch('/api/mentor/create',
+        {method: 'POST',
+        body: JSON.stringify({
+          userId: '1237',
+          username: 'testuser3',
+          name: 'Test User3',
+          status: 'active1'
+          })})}}>x
+      </Button>
 
       <Benefits data={benefitOne} />
       <Benefits imgPos="right" data={benefitTwo} />
