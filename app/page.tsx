@@ -54,6 +54,43 @@ export default function Home() {
         Create Learner User Record
       </Button>
 
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/availability/create', {
+            method: 'POST',
+            body: JSON.stringify({
+              userId: '6294c405-fc9e-4792-9698-59b927d8b170',
+              day_of_week: 1,
+              startTime: "12:20:00",
+              endTime: "12:20:00",
+              formatNote: 'hello',
+            }),
+          });
+        }}
+      >
+        Create Availability
+      </Button>
+
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/match/update_status', {
+            method: 'POST',
+            body: JSON.stringify({
+              status: 'PLANNED',
+              matchId: 'qwertyuiop',
+            }),
+          });
+        }}
+      >
+        Update Status
+      </Button>
+
       <Benefits data={benefitOne} />
       <Benefits imgPos="right" data={benefitTwo} />
 
