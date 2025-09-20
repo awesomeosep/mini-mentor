@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { Container } from '@/components/Landing/Container';
 import { Hero } from '@/components/Landing/Hero';
 import { SectionTitle } from '@/components/Landing/SectionTitle';
@@ -64,8 +64,8 @@ export default function Home() {
             body: JSON.stringify({
               userId: '6294c405-fc9e-4792-9698-59b927d8b170',
               day_of_week: 1,
-              startTime: "12:20:00",
-              endTime: "12:20:00",
+              startTime: '12:20:00',
+              endTime: '12:20:00',
               formatNote: 'hello',
             }),
           });
@@ -79,24 +79,7 @@ export default function Home() {
         size="lg"
         className="mx-auto w-48"
         onClick={async () => {
-          return await fetch('/api/match/update_status', {
-            method: 'POST',
-            body: JSON.stringify({
-              status: 'PLANNED',
-              matchId: 'qwertyuiop',
-            }),
-          });
-        }}
-      >
-        Update Status
-      </Button>
-
-      <Button
-        variant="secondary"
-        size="lg"
-        className="mx-auto w-48"
-        onClick={async () => {
-          return await fetch('/api/match/create', {
+          return await fetch('/api/match', {
             method: 'POST',
             body: JSON.stringify({
               listing_id: 'af24b61f-074b-40d3-82ea-04ed72e6d350',
@@ -115,8 +98,8 @@ export default function Home() {
         size="lg"
         className="mx-auto w-48"
         onClick={async () => {
-          return await fetch('/api/match/update', {
-            method: 'POST',
+          return await fetch('/api/match', {
+            method: 'UPDATE',
             body: JSON.stringify({
               newStatus: 'PLANNED',
               matchId: 'ea5a6b40-e9d7-4ee3-b43c-ed5368ebe556',
@@ -132,11 +115,8 @@ export default function Home() {
         size="lg"
         className="mx-auto w-48"
         onClick={async () => {
-          return await fetch('/api/match/get', {
-            method: 'POST',
-            body: JSON.stringify({
-              user_type: 'LEARNER'
-            }),
+          return await fetch('/api/match', {
+            method: 'GET',
           });
         }}
       >

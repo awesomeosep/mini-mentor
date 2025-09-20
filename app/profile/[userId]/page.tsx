@@ -1,5 +1,4 @@
 import ProfileHeader from '@/components/profile-page/components/profile-header';
-import ProfileContent from '@/components/profile-page/components/profile-content';
 import ProfileSettings from '@/components/ProfileSettings';
 
 interface ProfilePageProps {
