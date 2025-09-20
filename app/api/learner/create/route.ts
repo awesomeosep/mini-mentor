@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       username: username,
       email: email,
       name: name,
-      status: "TEACHING",
+      status: "LEARNING",
       join_date: new Date(),
       ban_date: null,
       ban_reason: '',

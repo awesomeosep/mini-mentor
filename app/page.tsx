@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { Container } from '@/components/Landing/Container';
 import { Hero } from '@/components/Landing/Hero';
@@ -17,17 +17,41 @@ export default function Home() {
         Nextly is a free landing page & marketing website template for startups and indie projects.
         Its built with Next.js & TailwindCSS. And its completely open-source.
       </SectionTitle>
-      
-      <Button variant="secondary" size="lg" className="w-48 mx-auto" onClick={async () => {
-        return await fetch('/api/mentor/create',
-        {method: 'POST',
-        body: JSON.stringify({
-          // userId: '1233',
-          email: 'testuseqwer1234@example.com',
-          username: 'testus1wqe234173812',
-          name: 'Test 12wqe3123',
-          // status: 'TEACHING'
-          })})}}>x
+
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/mentor/create', {
+            method: 'POST',
+            body: JSON.stringify({
+              email: 'testuseqwer1234@example.com',
+              username: 'testus1wqe234173812',
+              name: 'Test 12wqe3123',
+            }),
+          });
+        }}
+      >
+        Create Mentor User Record
+      </Button>
+
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/learner/create', {
+            method: 'POST',
+            body: JSON.stringify({
+              email: 'qwertyuiopasdfghjk@example.com',
+              username: 'qwertyuiop',
+              name: 'asdfhjklxcvbn',
+            }),
+          });
+        }}
+      >
+        Create Learner User Record
       </Button>
 
       <Benefits data={benefitOne} />
