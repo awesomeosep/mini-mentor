@@ -8,6 +8,7 @@ import { Faq } from '@/components/Landing/Faq';
 import { benefitOne, benefitTwo } from '@/components/Landing/data';
 import { Cta } from '@/components/Landing/Cta';
 import { Button } from '@/components/ui/button';
+import { userAgent } from 'next/server';
 export default function Home() {
   return (
     <Container className="flex flex-col gap-16">
@@ -124,6 +125,22 @@ export default function Home() {
         }}
       >
         Update Match
+      </Button>
+
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/match/get', {
+            method: 'POST',
+            body: JSON.stringify({
+              user_type: 'LEARNER'
+            }),
+          });
+        }}
+      >
+        Get Matches
       </Button>
 
       <Benefits data={benefitOne} />
