@@ -1,14 +1,12 @@
-'use client';
 import { Container } from '@/components/Landing/Container';
 import { Hero } from '@/components/Landing/Hero';
 import { SectionTitle } from '@/components/Landing/SectionTitle';
 import { Benefits } from '@/components/Landing/Benefits';
 import { Faq } from '@/components/Landing/Faq';
+import { Button } from '@/components/ui/button';
 
 import { benefitOne, benefitTwo } from '@/components/Landing/data';
 import { Cta } from '@/components/Landing/Cta';
-import { Button } from '@/components/ui/button';
-import { userAgent } from 'next/server';
 export default function Home() {
   return (
     <Container className="flex flex-col gap-16">
