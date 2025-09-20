@@ -15,7 +15,7 @@ export function Hero() {
               <ArrowDownRight className="ml-2 size-4" />
             </Badge>
             <h1 className="my-6 text-pretty text-4xl font-bold lg:text-6xl">
-              Welcome to Our Website
+              Micromentoring for the Masses{' '}
             </h1>
             <p className="mb-8 max-w-xl text-muted-foreground lg:text-xl">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Elig doloremque mollitia
