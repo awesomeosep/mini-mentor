@@ -185,14 +185,14 @@ export default function Home() {
 
       {/* <SectionTitle
         preTitle="Testimonials"
-        title="Here's what our customers said"
+        title="Heres what our customers said"
       >
         Testimonials is a great way to increase the brand trust and awareness.
         Use this section to highlight your popular customers.
       </SectionTitle> */}
 
       <SectionTitle preTitle="FAQ" title="Frequently Asked Questions">
-        Still have questions? We've got answers.
+        Still have questions? We&apos;ve got answers.
       </SectionTitle>
       <Faq />
     </Container>
