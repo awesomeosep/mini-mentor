@@ -18,7 +18,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import error from 'next/error';
+import { useRouter } from 'next/navigation';
+// import error from 'next/error';
 
 const ListingSchema = z.object({
   listing_id: z.string(),
@@ -46,6 +47,7 @@ export default function ReportForm({ listingId }: { listingId: string }) {
   const [listingData, setListingData] = useState<ListingType | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const form = useForm<ReportInput>({
     resolver: zodResolver(ReportSchema),
@@ -93,9 +95,8 @@ export default function ReportForm({ listingId }: { listingId: string }) {
           report_reason_text: values.report_reason_text,
         }),
       });
-      if (error) throw error;
-      setMessage('✅ Profile saved!');
-      //   reset(values);
+      setMessage('Report sent successfully!');
+      router.push("/");
     } catch (err: any) {
       setMessage(err.message);
     } finally {
