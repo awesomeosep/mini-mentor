@@ -32,6 +32,8 @@ export async function Navbar() {
     .limit(1)
     .single();
 
+  console.log('profileRes', profileRes, profileError);
+
   return (
     <nav className="flex h-16 w-full justify-center border-b border-b-foreground/10">
       <div className="flex w-full max-w-5xl items-center justify-between p-3 px-5 text-sm">
@@ -114,7 +116,7 @@ export async function Navbar() {
               </NavigationMenuItem>
             ) : null}
             <NavigationMenuItem>
-              <Link href="/dashboard" legacyBehavior passHref>
+              <Link href={"/profile/"+user?.id} legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Dashboard
                 </NavigationMenuLink>

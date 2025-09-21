@@ -54,6 +54,12 @@ export default async function ListingPage({ params }: Props) {
     data: { user },
   } = await supabase.auth.getUser();
 
+	const {data: mentorInfo} = await supabase
+		.from('users')
+		.select('*')
+		.eq('userid', listing.mentor_user_id)
+		.single();
+
   const { data: learnerAvailability } = await supabase
     .from('user_availability')
     .select('*')
@@ -70,9 +76,9 @@ export default async function ListingPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 p-8">
-      <h1 className="text-3xl font-bold">{listing.name}</h1>
+      <h1 className="text-3xl font-bold">{listing?.name}</h1>
       <div className="flex items-center justify-between">
-        <p className="text-muted-foreground">{listing.description}</p>
+        <p className="text-muted-foreground">{listing?.description}</p>
         <span className="rounded bg-gray-200 px-2 py-1 text-sm font-medium">{listing.status}</span>
       </div>
       {listing.skills && (
@@ -85,15 +91,15 @@ export default async function ListingPage({ params }: Props) {
         {listing.users && (
           <div className="space-y-1">
             <p>
-              <span className="font-medium">Name:</span> {listing.users[0].name}
+              <span className="font-medium">Name:</span> {mentorInfo?.name}
             </p>
             <p>
               <span className="font-medium">Username:</span>{' '}
               <Link
-                href={`/profile/${listing.users[0].userid}`}
+                href={`/profile/${mentorInfo?.userid}`}
                 className="text-blue-600 hover:underline"
               >
-                @{listing.users[0].username}
+                @{mentorInfo?.username}
               </Link>
             </p>
           </div>

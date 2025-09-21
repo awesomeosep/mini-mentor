@@ -113,12 +113,13 @@ export default function ProfilePage({ params }: Props) {
       // fetch matches where this user is mentor
 
       console.log(myUser1, (await params).userId);
-      if (myUser1?.id === (await params).userId) {
+      if (myUser1?.id === (await params).userId || true) {
         try {
           const resM = await fetch('/api/match', {
             method: 'GET',
           });
           const matchesData = await resM.json();
+					console.log('matchesdata', matchesData);
           // fetch all listings for matches in matchesData
           const listingIds = matchesData.map((m: any) => m.listing_id);
           const { data: listingsForMatchesData, error: listingsError } = await supabase
@@ -152,7 +153,7 @@ export default function ProfilePage({ params }: Props) {
           setListingsForMatches(listingsForMatchesData ?? []);
           console.log({ listingsForMatches });
 
-          if (mounted) setMatches(matchesData);
+          setMatches(matchesData);
         } catch (err) {
           console.error('failed to load matches', err);
         }
