@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
+import Link from 'next/link';
+
 export function Hero() {
   return (
     <section>
@@ -21,11 +23,15 @@ export function Hero() {
               Connect with verified mentors, access exclusive resources, and take your skills to the next level.
             </p>
             <div className="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
-              <Button className="w-full sm:w-auto">Find Your Mentor</Button>
+							<Link href="/sign-up" passHref>
+              <Button className="w-full sm:w-auto">Sign Up</Button>
+							</Link>
+							<Link href="/sign-in" passHref>
               <Button variant="outline" className="w-full sm:w-auto">
-                Share Your Expertise
+               Sign In 
                 <ArrowDownRight className="ml-2 size-4" />
               </Button>
+							</Link>
             </div>
           </div>
           <Image

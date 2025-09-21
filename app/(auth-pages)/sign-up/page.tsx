@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import { SmtpMessage } from '../smtp-message';
+
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -92,7 +92,7 @@ export default function Signup() {
           Sign Up
         </Button>
       </form>
-      <SmtpMessage />
+  
     </Form>
   );
 }
