@@ -42,8 +42,8 @@ export default function SignIn() {
       toast.error(res.message);
     } else {
       toast.success(res.message);
-      // redirect to protected page
-      router.push('/protected');
+
+      router.push('/profile/new');
     }
   }
 
@@ -95,7 +95,7 @@ export default function SignIn() {
             </FormItem>
           )}
         />
-        <Button type="submit" isLoading={form.formState.isSubmitting}>
+        <Button type="submit" disabled={form.formState.isSubmitting}>
           Sign In
         </Button>
       </form>

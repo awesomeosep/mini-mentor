@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex min-h-screen flex-col items-center">
             <div className="flex w-full flex-1 flex-col items-center">
               <Navbar />
-              <div className="flex max-w-5xl flex-col p-0 sm:p-5">{children}</div>
+              <div className="flex w-full max-w-full flex-col p-0 sm:p-5">{children}</div>
               <Footer />
             </div>
           </main>

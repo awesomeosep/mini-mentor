@@ -1,15 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -25,6 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
+
+import { createClient } from '@/lib/supabase/client';
+import { redirect } from 'next/navigation';
 
 const AvailabilitySchema = z.object({
   day_of_week: z.number().min(0).max(6),
@@ -39,6 +41,7 @@ const ProfileSchema = z.object({
   timezone: z.string().min(2),
   github_id: z.string().optional(),
   status: z.enum(['TEACHING', 'PAUSED', 'LEARNING', 'MODERATING']).default('LEARNING'),
+
   experience: z.string().optional(),
   expertise: z.string().optional(),
   availability: z.array(AvailabilitySchema).optional(),
@@ -46,57 +49,57 @@ const ProfileSchema = z.object({
 
 type ProfileInput = z.infer<typeof ProfileSchema>;
 
-export default function ProfileSettings({ userId }: { userId: string }) {
-  const supabase = createClientComponentClient();
-  const [initialData, setInitialData] = useState<ProfileInput | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-
+export default function ProfileSettingField() {
+  const supabase = createClient();
   const form = useForm<ProfileInput>({
     resolver: zodResolver(ProfileSchema),
-    defaultValues: initialData || { availability: [] },
+    defaultValues: {
+      availability: [{ day_of_week: 1, start_time: '', end_time: '' }],
+    },
+  });
+  supabase.auth.getUser().then(async ({ data }) => {
+    const { data: profileRes, error: profileError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('userid', data?.user?.id)
+      .limit(1)
+      .single();
+    console.log('profile stuff', profileRes, profileError);
+    if (profileRes && !profileError) {
+      if (profileRes.status == 'LEARNING') {
+        return redirect('/listings');
+      } else {
+        return redirect('listings/new');
+      }
+    }
+    form.setValue('name', profileRes?.name || '');
+    form.setValue('username', profileRes?.username || '');
+
+    form.setValue('timezone', profileRes?.timezone || '');
+    form.setValue('experience', profileRes?.experience || '');
+    form.setValue('status', profileRes?.status || 'LEARNING');
   });
 
-  const { control, handleSubmit, reset } = form;
+  const { control, handleSubmit } = form;
   const { fields, append, remove } = useFieldArray({ control, name: 'availability' });
 
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) setCurrentUserId(user.id);
-    });
-  }, [supabase]);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('userid', userId)
-        .single();
-
-      if (!error && data) {
-        setInitialData(data);
-        reset(data);
-      }
-    };
-    fetchProfile();
-  }, [userId, supabase, reset]);
-
-  if (currentUserId !== userId) return null;
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   const onSubmit = async (values: ProfileInput) => {
     setLoading(true);
     setMessage(null);
 
     try {
-      const { error } = await supabase.from('users').upsert({
-        userid: userId,
-        ...values,
+      const res = await fetch('/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
       });
-      if (error) throw error;
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update profile');
       setMessage('✅ Profile saved!');
-      reset(values);
+      form.reset(values);
     } catch (err: any) {
       setMessage(err.message);
     } finally {
@@ -105,10 +108,11 @@ export default function ProfileSettings({ userId }: { userId: string }) {
   };
 
   return (
-    <Card className="mx-auto mt-6 max-w-3xl">
+    <Card className="mx-auto max-w-2xl">
       <CardContent>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* Name */}
             <FormField
               control={control}
               name="name"
@@ -116,13 +120,14 @@ export default function ProfileSettings({ userId }: { userId: string }) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Your Name" />
+                    <Input placeholder="Your Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Username */}
             <FormField
               control={control}
               name="username"
@@ -130,13 +135,14 @@ export default function ProfileSettings({ userId }: { userId: string }) {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="username123" />
+                    <Input placeholder="username123" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Timezone */}
             <FormField
               control={control}
               name="timezone"
@@ -144,22 +150,22 @@ export default function ProfileSettings({ userId }: { userId: string }) {
                 <FormItem>
                   <FormLabel>Timezone</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="America/New_York" />
+                    <Input placeholder="America/New_York" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* GitHub */}
+            {/* Github */}
             <FormField
               control={control}
               name="github_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>GitHub ID (optional)</FormLabel>
+                  <FormLabel>Github ID (optional)</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="github_username" />
+                    <Input placeholder="github_username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -174,7 +180,7 @@ export default function ProfileSettings({ userId }: { userId: string }) {
                 <FormItem>
                   <FormLabel>Status</FormLabel>
                   <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
+                    <Select defaultValue={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
@@ -191,7 +197,7 @@ export default function ProfileSettings({ userId }: { userId: string }) {
               )}
             />
 
-            {/* Experience */}
+            {/* Mentor experience */}
             <FormField
               control={control}
               name="experience"
@@ -199,13 +205,14 @@ export default function ProfileSettings({ userId }: { userId: string }) {
                 <FormItem>
                   <FormLabel>Experience / Bio (optional)</FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder="Mentoring experience, age groups, etc." />
+                    <Textarea placeholder="Mentoring experience, age groups, etc." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Mentor expertise */}
             <FormField
               control={control}
               name="expertise"
@@ -213,24 +220,25 @@ export default function ProfileSettings({ userId }: { userId: string }) {
                 <FormItem>
                   <FormLabel>Expertise / Skills (optional)</FormLabel>
                   <FormControl>
-                    <Textarea {...field} placeholder="Areas you teach or awards" />
+                    <Textarea placeholder="Areas you teach or awards" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Availability for mentors */}
             {fields.length > 0 && (
               <div className="space-y-2">
-                <FormLabel>Weekly Availability</FormLabel>
-                {fields.map((f, idx) => (
-                  <div key={f.id} className="flex flex-wrap items-center gap-2">
+                <FormLabel className="font-bold">Weekly Availability</FormLabel>
+                {fields.map((fieldItem, idx) => (
+                  <div key={fieldItem.id} className="flex flex-wrap items-center gap-2">
                     <FormField
                       control={control}
                       name={`availability.${idx}.day_of_week`}
                       render={({ field }) => (
                         <Select
-                          value={String(field.value)}
+                          defaultValue={String(field.value)}
                           onValueChange={(v) => field.onChange(Number(v))}
                         >
                           <SelectTrigger className="w-28">
@@ -246,6 +254,7 @@ export default function ProfileSettings({ userId }: { userId: string }) {
                         </Select>
                       )}
                     />
+
                     <FormField
                       control={control}
                       name={`availability.${idx}.start_time`}
@@ -263,11 +272,13 @@ export default function ProfileSettings({ userId }: { userId: string }) {
                         <Input placeholder="Note" {...field} className="flex-1" />
                       )}
                     />
-                    <Button variant="destructive" type="button" onClick={() => remove(idx)}>
+
+                    <Button type="button" variant="destructive" onClick={() => remove(idx)}>
                       Remove
                     </Button>
                   </div>
                 ))}
+
                 <Button
                   type="button"
                   variant="secondary"
@@ -280,9 +291,10 @@ export default function ProfileSettings({ userId }: { userId: string }) {
               </div>
             )}
 
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button disabled={loading} type="submit" className="w-full">
               {loading ? 'Saving...' : 'Save Profile'}
             </Button>
+
             {message && <p className="mt-2 text-center text-sm text-muted-foreground">{message}</p>}
           </form>
         </Form>

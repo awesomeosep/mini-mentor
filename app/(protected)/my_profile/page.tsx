@@ -9,8 +9,16 @@ export default async function ProtectedPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+
+
   if (!user) {
     return redirect('/sign-in');
+  } else {
+		  const profileRes = await supabase.from('users').select('*').eq('userid', user?.id).single();
+	if (!profileRes) {
+			redirect('/profile/new')
+		}
+    return redirect('/profile');
   }
 
   return (

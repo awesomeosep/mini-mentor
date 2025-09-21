@@ -23,6 +23,13 @@ export async function Navbar() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { data: profileRes, error: profileError } = await supabase
+    .from('users')
+    .select('*')
+    .eq('userid', user?.id)
+    .limit(1)
+    .single();
+
   return (
     <nav className="flex h-16 w-full justify-center border-b border-b-foreground/10">
       <div className="flex w-full max-w-5xl items-center justify-between p-3 px-5 text-sm">
@@ -51,15 +58,40 @@ export async function Navbar() {
                 </Link>
               </NavigationMenuItem>
             )}
-            {user && (
+            {user && (profileError || !profileRes) ? (
               <NavigationMenuItem>
-                <Link href="/docs" legacyBehavior passHref>
+                <Link href="/profile/new" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Dashboard
+                    Complete Profile
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-            )}
+            ) : null}
+            <NavigationMenuItem>
+              <Link href="/dashboard" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Dashboard
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+
+            {user && profileRes?.status == 'TEACHING' ? (
+              <NavigationMenuItem>
+                <Link href="/listings/new" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Create a Listing
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            ) : null}
+
+            <NavigationMenuItem>
+              <Link href="/listings" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Find a Mentorship
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -77,7 +109,7 @@ export async function Navbar() {
           <SheetContent side="left">
             <SheetTitle>
               <p className="text-xl font-extralight tracking-wider text-foreground sm:text-2xl">
-                Example
+                MiniMentor
               </p>
             </SheetTitle>
             <div className="my-5 grid gap-6 p-6">
@@ -92,40 +124,11 @@ export async function Navbar() {
               </SheetTrigger>
               <SheetTrigger asChild>
                 <Link
-                  href="/about"
+                  href="https://github.com/matmanna/mini-mentor"
                   className="text-sm font-medium underline-offset-4 hover:underline"
                   prefetch={false}
                 >
-                  About
-                </Link>
-              </SheetTrigger>
-              <SheetTrigger asChild>
-                <Link
-                  href="/blog"
-                  className="text-sm font-medium underline-offset-4 hover:underline"
-                  prefetch={false}
-                >
-                  Blog
-                </Link>
-              </SheetTrigger>
-              <hr />
-              <SheetTrigger asChild>
-                <Link
-                  href="#"
-                  className="text-sm font-medium underline-offset-4 hover:underline"
-                  prefetch={false}
-                >
-                  Documentation
-                </Link>
-              </SheetTrigger>
-              <hr />
-              <SheetTrigger asChild>
-                <Link
-                  href="/contact"
-                  className="text-sm font-medium underline-offset-4 hover:underline"
-                  prefetch={false}
-                >
-                  Contact
+                  GitHub
                 </Link>
               </SheetTrigger>
             </div>

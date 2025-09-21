@@ -71,7 +71,7 @@ export default function ForgotPassword() {
             </FormItem>
           )}
         />
-        <Button type="submit" isLoading={form.formState.isSubmitting}>
+        <Button type="submit" disabled={form.formState.isSubmitting}>
           Reset Password
         </Button>
       </form>

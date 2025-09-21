@@ -5,36 +5,14 @@ const sections = [
   {
     title: 'Product',
     links: [
-      { name: 'Overview', href: '#' },
-      { name: 'Pricing', href: '#' },
-      { name: 'Features', href: '#' },
-      { name: 'Integrations', href: '#' },
+      { name: 'Home', href: '#' },
+      { name: 'Stats', href: '#' },
     ],
   },
-  {
-    title: 'Company',
-    links: [
-      { name: 'About', href: '#' },
-      { name: 'Team', href: '#' },
-      { name: 'Blog', href: '#' },
-      { name: 'Contact', href: '#' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { name: 'Help', href: '#' },
-      { name: 'Sales', href: '#' },
-      { name: 'Advertise', href: '#' },
-    ],
-  },
+
   {
     title: 'Social',
-    links: [
-      { name: 'Twitter', href: '#' },
-      { name: 'Instagram', href: '#' },
-      { name: 'LinkedIn', href: '#' },
-    ],
+    links: [{ name: 'GitHub', href: 'https://github.com/matmanna/mini-mentor' }],
   },
 ];
 
@@ -52,7 +30,7 @@ export function Footer() {
                 height={100}
                 className="mb-4 h-7"
               />
-              <p className="font-bold">Components made easy.</p>
+              <p className="font-bold">Micromentorship for the masses.</p>
             </div>
             {sections.map((section, sectionIdx) => (
               <div key={sectionIdx}>

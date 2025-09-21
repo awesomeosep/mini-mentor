@@ -1,4 +1,3 @@
-// app/protected/layout.tsx
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
