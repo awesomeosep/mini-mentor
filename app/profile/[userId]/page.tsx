@@ -87,9 +87,8 @@ export default function ProfilePage({ params }: Props) {
           body: JSON.stringify({ userid: (await params).userId }),
         });
         const profileData = await res.json();
-        console.log('profile', profileData)
+        console.log('profile', profileData);
         setData(profileData[0] as UserData);
-        
       } catch (err) {
         if (mounted) setError(err);
         console.error(err);
@@ -113,50 +112,46 @@ export default function ProfilePage({ params }: Props) {
       // fetch matches where this user is mentor
 
       console.log(myUser1, (await params).userId);
-      if (myUser1?.id === (await params).userId || true) {
-        try {
-          const resM = await fetch('/api/match', {
-            method: 'GET',
-          });
-          const matchesData = await resM.json();
-					console.log('matchesdata', matchesData);
-          // fetch all listings for matches in matchesData
-          const listingIds = matchesData.map((m: any) => m.listing_id);
-          const { data: listingsForMatchesData, error: listingsError } = await supabase
-            .from('mentorship_listing')
-            .select('*')
-            .in('listing_id', listingIds);
-          console.log('formatches', listingsForMatchesData, listingsError);
 
-          setListingsForMatches(listingsForMatchesData ?? []);
+      try {
+        const resM = await fetch('/api/match', {
+          method: 'GET',
+        });
+        const matchesData = await resM.json();
+        console.log('matchesdata', matchesData);
+        // fetch all listings for matches in matchesData
+        const listingIds = matchesData.map((m: any) => m.listing_id);
+        const { data: listingsForMatchesData, error: listingsError } = await supabase
+          .from('mentorship_listing')
+          .select('*')
+          .in('listing_id', listingIds);
+        console.log('formatches', listingsForMatchesData, listingsError);
 
-          const { data: learnerNamesForLearners, error: learnersError } = await supabase
-            .from('users')
-            .select('*')
-            .in(
-              'userid',
-              matchesData.map((m: any) => m.learner_id),
-            );
-              const { data: mentorNamesForMentors, error: mentorsError } = await supabase
-            .from('users')
-            .select('*')
-            .in(
-              'userid',
-              matchesData.map((m: any) => m.mentor_id).flat(),
-            );
-            console.log('formentors', mentorNamesForMentors, mentorsError);
+        setListingsForMatches(listingsForMatchesData ?? []);
 
-          console.log('forlearners', learnerNamesForLearners, learnersError);
-          setLearnerNamesForLearners(learnerNamesForLearners ?? []);
-          setMentorNamesForMentors(mentorNamesForMentors ?? []);
+        const { data: learnerNamesForLearners, error: learnersError } = await supabase
+          .from('users')
+          .select('*')
+          .in(
+            'userid',
+            matchesData.map((m: any) => m.learner_id),
+          );
+        const { data: mentorNamesForMentors, error: mentorsError } = await supabase
+          .from('users')
+          .select('*')
+          .in('userid', matchesData.map((m: any) => m.mentor_id).flat());
+        console.log('formentors', mentorNamesForMentors, mentorsError);
 
-          setListingsForMatches(listingsForMatchesData ?? []);
-          console.log({ listingsForMatches });
+        console.log('forlearners', learnerNamesForLearners, learnersError);
+        setLearnerNamesForLearners(learnerNamesForLearners ?? []);
+        setMentorNamesForMentors(mentorNamesForMentors ?? []);
 
-          setMatches(matchesData);
-        } catch (err) {
-          console.error('failed to load matches', err);
-        }
+        setListingsForMatches(listingsForMatchesData ?? []);
+        console.log({ listingsForMatches });
+
+        setMatches(matchesData);
+      } catch (err) {
+        console.error('failed to load matches', err);
       }
     })();
 
@@ -281,27 +276,26 @@ export default function ProfilePage({ params }: Props) {
                         Listing Name:{' '}
                         {listingsForMatches.find((l) => l.listing_id == m.listing_id)?.name}
                       </div>
-                      { m.mentor_id == myUser?.id ? (
-                      <div className="text-sm text-muted-foreground">
-                        Mentee:{' '}
-                        {learnerNamesForLearners.find((l) => l.userid == m.learner_id)?.name}
-                      </div>
+                      {m.mentor_id == myUser?.id ? (
+                        <div className="text-sm text-muted-foreground">
+                          Mentee:{' '}
+                          {learnerNamesForLearners.find((l) => l.userid == m.learner_id)?.name}
+                        </div>
                       ) : (
                         <div className="text-sm text-muted-foreground">
-                        Mentor:{' '}
-                        {mentorNamesForMentors.find((l) => l.userid == m.mentor_id)?.name}
-                      </div>
+                          Mentor: {mentorNamesForMentors.find((l) => l.userid == m.mentor_id)?.name}
+                        </div>
                       )}
                     </div>
                     <div className="ml-4 flex-shrink-0">
                       <div className="rounded-full bg-muted px-2 py-1 text-xs">{m.status}</div>
                     </div>
                   </div>
-                  {m.status === 'WAITING_MENTOR' &&  m.mentor_id == myUser?.id && (
+                  {m.status === 'WAITING_MENTOR' && m.mentor_id == myUser?.id && (
                     <Button
                       className="ml-2"
                       onClick={() => {
-                        console.log(m.match_id)
+                        console.log(m.match_id);
                         fetch('/api/match/', {
                           method: 'PUT',
                           body: JSON.stringify({
@@ -328,7 +322,6 @@ export default function ProfilePage({ params }: Props) {
             ))}
         </div>
       </div>
-
     </div>
   );
 }
