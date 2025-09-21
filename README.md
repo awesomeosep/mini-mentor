@@ -16,6 +16,7 @@ A platform that bridges aspiring learners with experienced mentors! Through inte
 - React
 - shadcn/ui
 - Tailwind CSS
+
 **Backend**:
 - Supabase
 - PostgreSQL
