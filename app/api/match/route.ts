@@ -29,6 +29,8 @@ export async function POST(request: Request) {
       end_time: null,
     };
 
+    console.log(match)
+
     const { data, error } = await supabase
       .from('mentorship_match')
       .insert(match)
@@ -79,7 +81,7 @@ export async function GET() {
   }
 }
 
-export async function UPDATE(request: Request) {
+export async function PUT(request: Request) {
   try {
     const supabase = await createClient();
     const {

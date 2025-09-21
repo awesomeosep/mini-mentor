@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const req = await request.json();
   const userid = req.userid;
   
-  const { data, error } = await supabase.from('profile').select('*').eq('userid', userid);
+  const { data, error } = await supabase.from('users').select('*').eq('userid', userid);
   console.log(data);
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   
