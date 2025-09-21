@@ -2,27 +2,33 @@
 **Connect, learn, and grow through personalized mentorship**
 
 ## Overview
-A platform that bridges aspiring learners with experienced mentors through intelligent matching and seamless communication tools. Create custom learning forms, find perfect matches, and develop skills in a structured yet flexible environment.
+A platform that bridges aspiring learners with experienced mentors! Through intelligent matching and seamless communication tools, state your current/future skills, find perfect matches, and develop skills and connections in a flexible environment!
 
 ## What It Does
 - **Smart Matching**: Form-based system connects learners with ideal mentors
 - **Custom Learning Paths**: Create tailored learning objectives and curricula
 - **Direct Communication**: Built-in messaging for seamless mentor-learner interaction
 - **Skill Development**: Structured approach to acquiring new competencies
-## How We Built It
+
+## Our Stack
 **Frontend**:
 - Next.js
 - React
 - shadcn/ui
 - Tailwind CSS
-  
 **Backend**:
 - Supabase
 - PostgreSQL
 - Node.js
 - Next.js
 
-## What's next for Mini Mentor
+## Core Features:
+- Create an account as a mentor or mentee!
+- List your skills, or what you want to learn!
+- Search for a relevant mentor and request to connect!
+- Confirm your learning session and get in contact!
+
+## What's Next for Mini Mentor
 - Review Systems
 - Resource Libraries
 - Advanced Searching and Filter Capabilities
