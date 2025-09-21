@@ -79,7 +79,7 @@ export async function GET() {
   }
 }
 
-export async function UPDATE(request: Request) {
+export async function PUT(request: Request) {
   try {
     const supabase = await createClient();
     const {
