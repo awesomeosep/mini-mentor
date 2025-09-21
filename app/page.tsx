@@ -12,9 +12,8 @@ export default function Home() {
   return (
     <Container className="flex flex-col gap-16">
       <Hero />
-      <SectionTitle preTitle="Benefits" title=" Why should you use this landing page">
-        Nextly is a free landing page & marketing website template for startups and indie projects.
-        Its built with Next.js & TailwindCSS. And its completely open-source.
+      <SectionTitle preTitle="Benefits" title=" Why you should choose Mini Mentor?">
+        Mini Mentor provides unique advantages for both learners and mentors to create meaningful connections and achieve goals.
       </SectionTitle>
 
       <Button
@@ -176,10 +175,8 @@ export default function Home() {
       <Benefits data={benefitOne} />
       <Benefits imgPos="right" data={benefitTwo} />
 
-      <SectionTitle preTitle="Watch a video" title="Learn how to fullfil your needs">
-        This section is to highlight a promo or demo video of your product. Analysts says a landing
-        page with video has 3% more conversion rate. So, don&apos;t forget to add one. Just like
-        this.
+      <SectionTitle preTitle="Watch our demo" title="See how to get started">
+        learn how MiniMentor connects learners with expert mentors for personalized growth and skill development.
       </SectionTitle>
 
       <Cta />

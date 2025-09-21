@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createServerClientWithCookies } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 
 const AvailabilitySchema = z.object({
   day_of_week: z.number().min(0).max(6),
@@ -14,12 +15,12 @@ const ListingSchema = z.object({
   description: z.string().optional(),
   status: z.enum(['OPEN', 'PAUSED', 'FULL', 'CLOSED']).default('OPEN'),
   end_date: z.string().optional(),
-  primary_skill_id: z.string().uuid(),
+  primary_skill_id: z.string(),
   availability: z.array(AvailabilitySchema).min(1),
 });
 
 export async function POST(req: Request) {
-  const supabase = createServerClientWithCookies();
+  const supabase = await createClient();
   const body = await req.json();
   const parsed = ListingSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
@@ -33,6 +34,27 @@ export async function POST(req: Request) {
   const end_date_value = parsed.data.end_date
     ? new Date(parsed.data.end_date + 'T00:00:00Z').toISOString()
     : null;
+
+  const { data: existingSkill, error: skillErr } = await supabase
+    .from('skills')
+    .select('id')
+    .eq('id', parsed.data.primary_skill_id)
+    .single();
+  if (skillErr || !existingSkill) {
+    console.log('skill doesnt exist');
+
+    const { data: newSkill, error: newSkillError } = await supabase
+      .from('skills')
+      .insert({ name: parsed.data.primary_skill_id })
+      .select()
+      .single();
+    console.log(newSkill, newSkillError);
+    if (newSkill && !newSkillError) {
+      parsed.data.primary_skill_id = newSkill.skill_id;
+    } else {
+      parsed.data.primary_skill_id = '';
+    }
+  }
 
   const { data: listing, error: listingErr } = await supabase
     .from('mentorship_listing')

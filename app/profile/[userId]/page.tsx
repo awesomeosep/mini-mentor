@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
 
 interface Props {
-  params: { userId: string };
+  params: Promise<{ userId: string }>;
 }
 
 type UserData = {
@@ -327,6 +327,7 @@ export default function ProfilePage({ params }: Props) {
             ))}
         </div>
       </div>
+
     </div>
   );
 }

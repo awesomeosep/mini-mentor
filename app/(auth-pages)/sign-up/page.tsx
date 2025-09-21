@@ -88,7 +88,7 @@ export default function Signup() {
             </FormItem>
           )}
         />
-        <Button type="submit" isLoading={form.formState.isSubmitting}>
+        <Button type="submit" disabled={form.formState.isSubmitting}>
           Sign Up
         </Button>
       </form>

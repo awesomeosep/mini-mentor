@@ -5,7 +5,7 @@ import { z } from 'zod';
 const ProfileSchema = z.object({
   username: z.string().min(3).max(30),
   name: z.string().min(1).max(60),
-  timezone: z.string().min(1), // IANA string
+  timezone: z.string().min(1),
   status: z.enum(['TEACHING', 'LEARNING', 'PAUSED', 'MODERATING']),
 });
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
+import { createClient } from '@/lib/supabase/client';
 
 const AvailabilitySchema = z.object({
   day_of_week: z.number().min(0).max(6),
@@ -38,7 +39,6 @@ const ProfileSchema = z.object({
   timezone: z.string().min(2),
   github_id: z.string().optional(),
   status: z.enum(['TEACHING', 'PAUSED', 'LEARNING', 'MODERATING']).default('LEARNING'),
-  // Mentor-specific
   experience: z.string().optional(),
   expertise: z.string().optional(),
   availability: z.array(AvailabilitySchema).optional(),
@@ -46,28 +46,61 @@ const ProfileSchema = z.object({
 
 type ProfileInput = z.infer<typeof ProfileSchema>;
 
-export default function ProfileSettingField({
-  initialData,
-}: {
-  initialData?: Partial<ProfileInput>;
-}) {
+export default function ProfilePage() {
+  const supabase = createClient();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
   const form = useForm<ProfileInput>({
     resolver: zodResolver(ProfileSchema),
-    defaultValues: initialData || {
+    defaultValues: {
       availability: [{ day_of_week: 1, start_time: '', end_time: '' }],
     },
   });
-
-  const { control, handleSubmit } = form;
+  const { control, handleSubmit, reset } = form;
   const { fields, append, remove } = useFieldArray({ control, name: 'availability' });
 
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) {
+        setLoading(false);
+        return;
+      }
+      const userId = auth.user.id;
+
+      const [{ data: profile }, { data: avail }] = await Promise.all([
+        supabase.from('users').select('*').eq('userid', userId).single(),
+        supabase.from('user_availability').select('*').eq('user_id', userId),
+      ]);
+
+      if (profile) {
+        reset({
+          name: profile.name ?? '',
+          username: profile.username ?? '',
+          timezone: profile.timezone ?? '',
+          github_id: profile.github_id ?? '',
+          status: profile.status ?? 'LEARNING',
+          experience: profile.experience ?? '',
+          expertise: profile.expertise ?? '',
+          availability:
+            avail?.map((a) => ({
+              day_of_week: a.day_of_week,
+              start_time: a.start_time.slice(0, 5), // HH:MM
+              end_time: a.end_time.slice(0, 5),
+              format_note: a.format_note ?? '',
+            })) ?? [],
+        });
+      }
+      setLoading(false);
+    })();
+  }, [reset, supabase]);
 
   const onSubmit = async (values: ProfileInput) => {
-    setLoading(true);
+    setSaving(true);
     setMessage(null);
-
     try {
       const res = await fetch('/api/profile', {
         method: 'POST',
@@ -76,14 +109,15 @@ export default function ProfileSettingField({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to update profile');
-      setMessage('✅ Profile saved!');
-      form.reset(values);
+      setMessage('✅ Profile updated!');
     } catch (err: any) {
       setMessage(err.message);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
+
+  if (loading) return <p className="p-8 text-center">Loading profile…</p>;
 
   return (
     <Card className="mx-auto max-w-2xl">
@@ -98,14 +132,14 @@ export default function ProfileSettingField({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Your Name" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Username */}
+    
             <FormField
               control={control}
               name="username"
@@ -113,14 +147,14 @@ export default function ProfileSettingField({
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="username123" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Timezone */}
+         
             <FormField
               control={control}
               name="timezone"
@@ -135,22 +169,20 @@ export default function ProfileSettingField({
               )}
             />
 
-            {/* Github */}
             <FormField
               control={control}
               name="github_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Github ID (optional)</FormLabel>
+                  <FormLabel>GitHub ID</FormLabel>
                   <FormControl>
-                    <Input placeholder="github_username" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Status */}
             <FormField
               control={control}
               name="status"
@@ -160,13 +192,14 @@ export default function ProfileSettingField({
                   <FormControl>
                     <Select defaultValue={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="TEACHING">TEACHING</SelectItem>
-                        <SelectItem value="PAUSED">PAUSED</SelectItem>
-                        <SelectItem value="LEARNING">LEARNING</SelectItem>
-                        <SelectItem value="MODERATING">MODERATING</SelectItem>
+                        {['TEACHING', 'PAUSED', 'LEARNING', 'MODERATING'].map((s) => (
+                          <SelectItem key={s} value={s}>
+                            {s}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -175,104 +208,97 @@ export default function ProfileSettingField({
               )}
             />
 
-            {/* Mentor experience */}
             <FormField
               control={control}
               name="experience"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Experience / Bio (optional)</FormLabel>
+                  <FormLabel>Experience / Bio</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Mentoring experience, age groups, etc." {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Mentor expertise */}
+   
             <FormField
               control={control}
               name="expertise"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Expertise / Skills (optional)</FormLabel>
+                  <FormLabel>Expertise / Skills</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Areas you teach or awards" {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Availability for mentors */}
-            {fields.length > 0 && (
-              <div className="space-y-2">
-                <FormLabel className="font-bold">Weekly Availability</FormLabel>
-                {fields.map((fieldItem, idx) => (
-                  <div key={fieldItem.id} className="flex flex-wrap items-center gap-2">
-                    <FormField
-                      control={control}
-                      name={`availability.${idx}.day_of_week`}
-                      render={({ field }) => (
-                        <Select
-                          defaultValue={String(field.value)}
-                          onValueChange={(v) => field.onChange(Number(v))}
-                        >
-                          <SelectTrigger className="w-28">
-                            <SelectValue placeholder="Day" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (
-                              <SelectItem key={i} value={String(i)}>
-                                {d}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    />
+        
+            <div className="space-y-2">
+              <FormLabel className="font-bold">Weekly Availability</FormLabel>
+              {fields.map((f, idx) => (
+                <div key={f.id} className="flex flex-wrap items-center gap-2">
+                  <FormField
+                    control={control}
+                    name={`availability.${idx}.day_of_week`}
+                    render={({ field }) => (
+                      <Select
+                        defaultValue={String(field.value)}
+                        onValueChange={(v) => field.onChange(Number(v))}
+                      >
+                        <SelectTrigger className="w-28">
+                          <SelectValue placeholder="Day" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d, i) => (
+                            <SelectItem key={i} value={String(i)}>
+                              {d}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`availability.${idx}.start_time`}
+                    render={({ field }) => <Input type="time" className="w-28" {...field} />}
+                  />
+                  <FormField
+                    control={control}
+                    name={`availability.${idx}.end_time`}
+                    render={({ field }) => <Input type="time" className="w-28" {...field} />}
+                  />
+                  <FormField
+                    control={control}
+                    name={`availability.${idx}.format_note`}
+                    render={({ field }) => (
+                      <Input placeholder="Note" className="flex-1" {...field} />
+                    )}
+                  />
+                  <Button type="button" variant="destructive" onClick={() => remove(idx)}>
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() =>
+                  append({ day_of_week: 1, start_time: '', end_time: '', format_note: '' })
+                }
+              >
+                + Add Slot
+              </Button>
+            </div>
 
-                    <FormField
-                      control={control}
-                      name={`availability.${idx}.start_time`}
-                      render={({ field }) => <Input type="time" {...field} className="w-28" />}
-                    />
-                    <FormField
-                      control={control}
-                      name={`availability.${idx}.end_time`}
-                      render={({ field }) => <Input type="time" {...field} className="w-28" />}
-                    />
-                    <FormField
-                      control={control}
-                      name={`availability.${idx}.format_note`}
-                      render={({ field }) => (
-                        <Input placeholder="Note" {...field} className="flex-1" />
-                      )}
-                    />
-
-                    <Button type="button" variant="destructive" onClick={() => remove(idx)}>
-                      Remove
-                    </Button>
-                  </div>
-                ))}
-
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() =>
-                    append({ day_of_week: 1, start_time: '', end_time: '', format_note: '' })
-                  }
-                >
-                  + Add Slot
-                </Button>
-              </div>
-            )}
-
-            <Button disabled={loading} type="submit" className="w-full">
-              {loading ? 'Saving...' : 'Save Profile'}
+            <Button type="submit" disabled={saving} className="w-full">
+              {saving ? 'Saving…' : 'Save Profile'}
             </Button>
-
             {message && <p className="mt-2 text-center text-sm text-muted-foreground">{message}</p>}
           </form>
         </Form>
