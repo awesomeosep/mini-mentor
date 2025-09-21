@@ -6,9 +6,7 @@ import { Navbar } from '@/components/Navbar';
 import NextTopLoader from 'nextjs-toploader';
 import { Footer } from '@/components/Footer';
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000';
+const defaultUrl = 'https://mini-mentor.netlify.app';
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),

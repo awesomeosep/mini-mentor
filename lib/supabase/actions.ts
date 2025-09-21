@@ -26,7 +26,7 @@ export const signUpAction = async (formData: FormData) => {
     console.error(error.code + ' ' + error.message);
     return { status: 'error', message: 'Could not sign up' };
   } else {
-    return { status: 'success', message: 'Check your email for a confirmation link' };
+    return redirect('/profile/new');
   }
 };
 
@@ -39,6 +39,7 @@ export const signInAction = async (formData: FormData) => {
     email,
     password,
   });
+  console.log(error);
 
   if (error) {
     return { status: 'error', message: 'Could not sign in' };
@@ -58,7 +59,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/api/auth/callback?redirect_to=/reset-password`,
+    redirectTo: `https://mini-mentor.netlify.app/api/auth/callback?redirect_to=/reset-password`,
   });
 
   if (error) {

@@ -15,8 +15,8 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  if (redirectTo) {
-    return NextResponse.redirect(`${origin}${redirectTo}`);
+  if (false && redirectTo) {
+    return NextResponse.redirect(`https://mini-mentor.netlify.app/api/auth/callback`);
   }
 
   // URL to redirect to after sign up process completes
