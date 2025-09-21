@@ -157,6 +157,22 @@ export default function Home() {
         profile find
       </Button>
 
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/profile/other', {
+            method: 'POST',
+            body: JSON.stringify({
+              userid: '1234'
+            }),
+          });
+        }}
+      >
+        profile find
+      </Button>
+
       <Benefits data={benefitOne} />
       <Benefits imgPos="right" data={benefitTwo} />
 
