@@ -18,7 +18,7 @@ export const signUpAction = async (formData: FormData) => {
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}api/auth/callback`,
+      emailRedirectTo: `https://mini-mentor.netlify.app/api/auth/callback`,
     },
   });
 
