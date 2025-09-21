@@ -29,6 +29,8 @@ export async function POST(request: Request) {
       end_time: null,
     };
 
+    console.log(match)
+
     const { data, error } = await supabase
       .from('mentorship_match')
       .insert(match)
