@@ -1,3 +1,4 @@
+"use client";
 import { Container } from '@/components/Landing/Container';
 import { Hero } from '@/components/Landing/Hero';
 import { SectionTitle } from '@/components/Landing/SectionTitle';
@@ -24,7 +25,7 @@ export default function Home() {
           return await fetch('/api/mentor/create', {
             method: 'POST',
             body: JSON.stringify({
-              email: 'testuseqwer1234@example.com',
+              email: 'jiwoo.won@mastersny.org',
               username: 'testus1wqe234173812',
               name: 'Test 12wqe3123',
             }),
@@ -138,6 +139,22 @@ export default function Home() {
         }}
       >
         report
+      </Button>
+
+      <Button
+        variant="secondary"
+        size="lg"
+        className="mx-auto w-48"
+        onClick={async () => {
+          return await fetch('/api/profile/listings', {
+            method: 'POST',
+            body: JSON.stringify({
+              mentor_user_id: '5be668f6-914c-499f-99fe-50ed6305e326'
+            }),
+          });
+        }}
+      >
+        profile find
       </Button>
 
       <Benefits data={benefitOne} />

@@ -10,6 +10,7 @@ const ProfileSchema = z.object({
 });
 
 export async function GET() {
+  const supabase = await createClient();
   const {
     data: { user },
     error: authErr,
@@ -20,7 +21,7 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json(data);
-}
+} 
 
 export async function POST(req: Request) {
   const supabase = await createClient();
