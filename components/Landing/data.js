@@ -11,46 +11,46 @@ import benefitOneImg from '@/public/img/benefit-one.png';
 import benefitTwoImg from '@/public/img/benefit-two.png';
 
 const benefitOne = {
-  title: 'Highlight your benefits',
-  desc: 'You can use this space to highlight your first benefit or a feature of your product. It can also contain an image or Illustration like in the example along with some bullet points.',
+  title: 'How it works',
+  desc: "On MiniMentor, everyone is a learner. Whether you are a seasoned professional or just starting out, you can both teach and learn. Here's how it works:",
   image: benefitOneImg,
   bullets: [
     {
-      title: 'Understand your customers',
-      desc: 'Then explain the first point breifly in one or two lines.',
+      title: 'Create a profile',
+      desc: 'Sign up and create a profile highlighting your skills, availability, and experience.',
       icon: <FaceSmileIcon />,
     },
     {
-      title: 'Improve acquisition',
-      desc: 'Here you can add the next benefit point.',
+      title: 'Find your match',
+      desc: 'Search our database of mentors and mentees to find the perfect match for your goals and interests.',
       icon: <ChartBarSquareIcon />,
     },
     {
-      title: 'Drive customer retention',
-      desc: 'This will be your last bullet point in this section.',
+      title: 'Find demand for your skills',
+      desc: 'Create a listing to offer your skills and expertise to those seeking mentorship in that area.',
       icon: <CursorArrowRaysIcon />,
     },
   ],
 };
 
 const benefitTwo = {
-  title: 'Offer more benefits here',
-  desc: 'You can use this same layout with a flip image to highlight your rest of the benefits of your product. It can also contain an image or Illustration as above section along with some bullet points.',
+  title: 'Give back to your community',
+  desc: 'MiniMentor allows you to give back while strengthening your own skills. Research shows that mentoring is a two-way street, with both mentors and mentees reaping the benefits.',
   image: benefitTwoImg,
   bullets: [
     {
-      title: 'Mobile Responsive Template',
-      desc: 'Nextly is designed as a mobile first responsive template.',
+      title: 'Trackable, Provable Impact',
+      desc: 'You can track and share the impact you make through mentoring.',
       icon: <DevicePhoneMobileIcon />,
     },
     {
-      title: 'Powered by Next.js & TailwindCSS',
-      desc: 'This template is powered by latest technologies and tools.',
+      title: 'Responsive Design',
+      desc: 'Use MiniMentor on any device, no matter the screen size.',
       icon: <AdjustmentsHorizontalIcon />,
     },
     {
       title: 'Dark & Light Mode',
-      desc: 'Nextly comes with a zero-config light & dark mode. ',
+      desc: 'Adapts to your system preference, or set manually.',
       icon: <SunIcon />,
     },
   ],

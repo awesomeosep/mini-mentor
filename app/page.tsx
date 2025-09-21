@@ -11,14 +11,16 @@ export default function Home() {
     <Container className="flex flex-col gap-16">
       <Hero />
       <SectionTitle preTitle="Benefits" title=" Why you should choose Mini Mentor?">
-        Mini Mentor provides unique advantages for both learners and mentors to create meaningful connections and achieve goals.
+        Mini Mentor provides unique advantages for both learners and mentors to create meaningful
+        connections and achieve goals.
       </SectionTitle>
 
       <Benefits data={benefitOne} />
       <Benefits imgPos="right" data={benefitTwo} />
 
       <SectionTitle preTitle="Watch our demo" title="See how to get started">
-        learn how MiniMentor connects learners with expert mentors for personalized growth and skill development.
+        learn how MiniMentor connects learners with expert mentors for personalized growth and skill
+        development.
       </SectionTitle>
 
       <Cta />
@@ -32,8 +34,7 @@ export default function Home() {
       </SectionTitle> */}
 
       <SectionTitle preTitle="FAQ" title="Frequently Asked Questions">
-        Answer your customers possible questions here, it will increase the conversion rate as well
-        as support or chat requests.
+        Still have questions? We've got answers.
       </SectionTitle>
       <Faq />
     </Container>

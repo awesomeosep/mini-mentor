@@ -25,21 +25,21 @@ export const Faq = () => {
 
 const faqdata = [
   {
-    question: 'Is this template completely free to use?',
-    answer: 'Yes, this template is completely free to use.',
+    question: 'Is this application completely free to use?',
+    answer: 'Yes! MiniMentor is completely free to use. We do not charge for any features or services.',
   },
   {
-    question: 'Can I use it in a commercial project?',
-    answer: 'Yes, this you can.',
+    question: 'Is MiniMentor open source?',
+    answer: 'Yes, all of our code is freely available on GitHub.',
   },
   {
-    question: 'What is your refund policy? ',
+    question: 'Can I use MiniMentor to earn volunteer hours?',
     answer:
-      "If you're unhappy with your purchase for any reason, email us within 90 days and we'll refund you in full, no questions asked.",
+      "It depends on your organization. Some organizations may accept volunteer hours earned through MiniMentor, while others may not. Please check with your organization to see if they accept volunteer hours from MiniMentor.",
   },
   {
-    question: 'Do you offer technical support? ',
+    question: 'Is the platform stable? ',
     answer:
-      "No, we don't offer technical support for free downloads. Please purchase a support plan to get 6 months of support.",
+      "No, we don't offer tectnical guarantees during our beta period. However, we will do our best to keep the platform up and running as much as possible.",
   },
 ];

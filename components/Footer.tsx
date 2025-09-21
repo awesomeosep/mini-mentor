@@ -46,7 +46,6 @@ export function Footer() {
             ))}
           </div>
           <div className="mt-24 flex flex-col justify-between gap-4 border-t pt-8 text-sm font-medium text-muted-foreground md:flex-row md:items-center">
-            <p>© {new Date().getFullYear()} Matias Guzman</p>
             <ul className="flex gap-4">
               <li className="underline hover:text-primary">
                 <a href="#"> Terms and Conditions</a>
