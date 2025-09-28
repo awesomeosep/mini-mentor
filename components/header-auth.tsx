@@ -53,7 +53,7 @@ export default async function AuthButton() {
         </Button>
       </form>
       <Button asChild size="sm" variant="default">
-        <Link href="/profile/">My Profile</Link>
+        <Link href={"/profile/" + user.id}>My Profile</Link>
       </Button>
     </div>
   ) : (
