@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
+    import { useRouter } from 'next/navigation';
 
 interface Props {
   params: Promise<{ userId: string }>;
@@ -72,6 +73,7 @@ export default function ProfilePage({ params }: Props) {
   const [myUser, setMyUser] = useState<any>(null);
 
   const [loadingListings, setLoadingListings] = useState(false);
+const router = useRouter();
 
   useEffect(() => {
     let mounted = true;
@@ -79,8 +81,11 @@ export default function ProfilePage({ params }: Props) {
     (async () => {
       const supabase = await createClient();
       try {
-        supabase.auth.getUser().then(({ data: { user } }) => {
+        supabase.auth.getUser().then(async ({ data: { user } }) => {
           setMyUser(user);
+  if (user.id == (await params).userId) {
+  router.push('/profile/new')
+}
         });
         const res = await fetch('/api/profile/other', {
           method: 'POST',
