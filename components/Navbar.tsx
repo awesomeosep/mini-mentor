@@ -178,7 +178,7 @@ export async function Navbar() {
                   GitHub
                 </Link>
               </SheetTrigger>
-              {user && (profileError || !profileRes) ? (
+           
                 <SheetTrigger asChild>
                   <Link
                     href="/profile/new"
@@ -188,7 +188,7 @@ export async function Navbar() {
                     Complete Profile
                   </Link>
                 </SheetTrigger>
-              ) : null}
+            
               <SheetTrigger asChild>
                 <Link
                   href="/dashboard"
