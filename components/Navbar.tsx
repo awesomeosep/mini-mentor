@@ -106,15 +106,14 @@ export async function Navbar() {
                 </Link>
               </NavigationMenuItem>
             )}
-            {user && (profileError || !profileRes) ? (
-              <NavigationMenuItem>
+            
+      <NavigationMenuItem>
                 <Link href="/profile/new" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Complete Profile
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-            ) : null}
             <NavigationMenuItem>
               <Link href={"/profile/"+user?.id} legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
