@@ -32,7 +32,7 @@ export async function Navbar() {
     .limit(1)
     .single();
 
-  console.log('profileRes', profileRes, profileError);
+  // console.log('profileRes', profileRes, profileError);
 
   return (
     <nav className="flex h-16 w-full justify-center border-b border-b-foreground/10">
@@ -108,9 +108,9 @@ export async function Navbar() {
             )}
             
       <NavigationMenuItem>
-                <Link href="/profile/new" legacyBehavior passHref>
+                <Link href="/my_profile" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Complete Profile
+                    Edit Profile
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
@@ -185,7 +185,7 @@ export async function Navbar() {
                     className="text-sm font-medium underline-offset-4 hover:underline"
                     prefetch={false}
                   >
-                    Complete Profile
+                    Edit Profile
                   </Link>
                 </SheetTrigger>
             

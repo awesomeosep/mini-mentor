@@ -82,7 +82,7 @@ export function SkillSelector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[250px] justify-between"
+          className="min-w-[250px] justify-between"
         >
           {searchValue ||
             (value ? skills.find((s) => s.skill_id === value)?.name : '') ||

@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Form,
   FormControl,
@@ -26,7 +25,6 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 
 import { createClient } from '@/lib/supabase/client';
-import { redirect } from 'next/navigation';
 
 const AvailabilitySchema = z.object({
   day_of_week: z.number().min(0).max(6),
@@ -41,7 +39,6 @@ const ProfileSchema = z.object({
   timezone: z.string().min(2),
   github_id: z.string().optional(),
   status: z.enum(['TEACHING', 'PAUSED', 'LEARNING', 'MODERATING']).default('LEARNING'),
-
   experience: z.string().optional(),
   expertise: z.string().optional(),
   availability: z.array(AvailabilitySchema).optional(),
@@ -57,28 +54,38 @@ export default function ProfileSettingField() {
       availability: [{ day_of_week: 1, start_time: '', end_time: '' }],
     },
   });
-  supabase.auth.getUser().then(async ({ data }) => {
-    const { data: profileRes, error: profileError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('userid', data?.user?.id)
-      .limit(1)
-      .single();
-    console.log('profile stuff', profileRes, profileError);
-    if (profileRes && !profileError) {
-      if (profileRes.status == 'LEARNING') {
-        return redirect('/listings');
-      } else {
-        return redirect('listings/new');
-      }
-    }
-    form.setValue('name', profileRes?.name || '');
-    form.setValue('username', profileRes?.username || '');
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data }) => {
+      console.log('user data', data);
+      if (data && data.user) {
+        const { data: profileRes, error: profileError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('userid', data?.user?.id)
+          .limit(1)
+          .single();
+        console.log('profile stuff#', data, profileRes, profileError);
+        // if (profileRes && !profileError) {
+        //   if (profileRes.status == 'LEARNING') {
+        //     return redirect('/listings');
+        //   } else {
+        //     return redirect('/listings/new');
+        //   }
+        // }
+        const { data: myAvailability } = await supabase
+          .from('user_availability')
+          .select('*')
+          .eq('user_id', data?.user?.id);
 
-    form.setValue('timezone', profileRes?.timezone || '');
-    form.setValue('experience', profileRes?.experience || '');
-    form.setValue('status', profileRes?.status || 'LEARNING');
-  });
+        form.setValue('name', profileRes?.name || '');
+        form.setValue('username', profileRes?.username || '');
+        form.setValue('timezone', profileRes?.timezone || '');
+        form.setValue('experience', profileRes?.experience || '');
+        form.setValue('status', profileRes?.status || 'LEARNING');
+        form.setValue('availability', myAvailability || []);
+      }
+    });
+  }, []);
 
   const { control, handleSubmit } = form;
   const { fields, append, remove } = useFieldArray({ control, name: 'availability' });
@@ -158,7 +165,7 @@ export default function ProfileSettingField() {
             />
 
             {/* Github */}
-            <FormField
+            {/* <FormField
               control={control}
               name="github_id"
               render={({ field }) => (
@@ -170,7 +177,7 @@ export default function ProfileSettingField() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             {/* Status */}
             <FormField
@@ -180,15 +187,17 @@ export default function ProfileSettingField() {
                 <FormItem>
                   <FormLabel>Status</FormLabel>
                   <FormControl>
-                    <Select defaultValue={field.value} onValueChange={field.onChange}>
+                    <Select
+                      value={field.value}
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="TEACHING">TEACHING</SelectItem>
-                        <SelectItem value="PAUSED">PAUSED</SelectItem>
                         <SelectItem value="LEARNING">LEARNING</SelectItem>
-                        <SelectItem value="MODERATING">MODERATING</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -198,7 +207,7 @@ export default function ProfileSettingField() {
             />
 
             {/* Mentor experience */}
-            <FormField
+            {/* <FormField
               control={control}
               name="experience"
               render={({ field }) => (
@@ -210,10 +219,10 @@ export default function ProfileSettingField() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             {/* Mentor expertise */}
-            <FormField
+            {/* <FormField
               control={control}
               name="expertise"
               render={({ field }) => (
@@ -225,7 +234,7 @@ export default function ProfileSettingField() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             {/* Availability for mentors */}
             {fields.length > 0 && (
