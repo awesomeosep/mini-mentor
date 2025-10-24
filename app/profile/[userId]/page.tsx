@@ -23,12 +23,6 @@ type UserData = {
   email?: string | null;
 };
 
-type SupabaseUserLike = {
-  id?: string;
-  email?: string | null;
-  user_metadata?: { username?: string; name?: string } | null;
-};
-
 function formatDate(iso?: string | null) {
   if (!iso) return '—';
   try {
@@ -52,8 +46,8 @@ export default function ProfilePage({ params }: Props) {
   const [data, setData] = useState<UserData | null>(null);
   const [error, setError] = useState<unknown | null>(null);
   const [listingsForMatches, setListingsForMatches] = useState<Array<any>>([]);
-  const [learnerNamesForLearners, setLearnerNamesForLearners] = useState<Array<any>>([]);
-  const [mentorNamesForMentors, setMentorNamesForMentors] = useState<Array<any>>([]);
+  const [learnerNamesForLearners, setLearnerNamesForLearners] = useState<Array<UserData>>([]);
+  const [mentorNamesForMentors, setMentorNamesForMentors] = useState<Array<UserData>>([]);
   const [listings, setListings] = useState<Array<{
     listing_id: string;
     name: string;
@@ -144,15 +138,15 @@ export default function ProfilePage({ params }: Props) {
             'userid',
             matchesData.map((m: any) => m.learner_id),
           );
-        const { data: mentorNamesForMentors, error: mentorsError } = await supabase
+        const { data: mentorNamesForMentors2, error: mentorsError } = await supabase
           .from('users')
           .select('*')
           .in('userid', matchesData.map((m: any) => m.mentor_id).flat());
-        console.log('formentors', mentorNamesForMentors, mentorsError);
+        console.log('formentors', mentorNamesForMentors2, mentorsError);
 
         console.log('forlearners', learnerNamesForLearners, learnersError);
         setLearnerNamesForLearners(learnerNamesForLearners ?? []);
-        setMentorNamesForMentors(mentorNamesForMentors ?? []);
+        setMentorNamesForMentors(mentorNamesForMentors2 ?? []);
 
         setListingsForMatches(listingsForMatchesData ?? []);
         console.log({ listingsForMatches });
@@ -315,13 +309,18 @@ export default function ProfilePage({ params }: Props) {
                       className="ml-2"
                       onClick={() => {
                         console.log(m.match_id);
-                        fetch('/api/match/', {
-                          method: 'PUT',
-                          body: JSON.stringify({
-                            matchId: m.match_id,
-                            newStatus: 'PLANNED',
-                          }),
-                        });
+                        try {
+                          fetch('/api/match/', {
+                            method: 'PUT',
+                            body: JSON.stringify({
+                              matchId: m.match_id,
+                              newStatus: 'PLANNED',
+                            }),
+                          });
+                          alert('Mentorship request accepted!');
+                        } catch (err) {
+                          console.error(err);
+                        }
                       }}
                     >
                       Accept Request
@@ -330,10 +329,13 @@ export default function ProfilePage({ params }: Props) {
                   {m.learner_id == myUser?.id && m.status === 'PLANNED' && (
                     <div>
                       <p>Mentorship confirmed!</p>{' '}
-                      <p>
-                        {learnerNamesForLearners.find((l) => l.id == m.mentor_id)?.username +
-                          "'s email: "}
-                      </p>
+                      <div className="text-sm text-muted-foreground">
+                        <p>
+                          {mentorNamesForMentors.find((l) => l.userid == m.mentor_id)?.username +
+                            "'s email: " +
+                            mentorNamesForMentors.find((l) => l.userid == m.mentor_id)?.email}
+                        </p>
+                      </div>
                     </div>
                   )}
                 </CardContent>

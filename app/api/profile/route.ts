@@ -53,6 +53,7 @@ export async function POST(req: Request) {
         timezone: parse.data.timezone,
         status: parse.data.status,
         join_date: new Date().toISOString(),
+        email: user.email || null,
       },
       { onConflict: 'userid' },
     )

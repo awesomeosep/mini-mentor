@@ -85,11 +85,10 @@ export default function ListingPage({ params }: Props) {
         const { data: mentorAvailability2 } = await supabase
           .from('user_availability')
           .select('*')
-          .eq('user_id', listing2.mentor_user_id)
-          .single();
+          .eq('user_id', listing2.mentor_user_id);
         setMentorAvailability(mentorAvailability2);
 
-        console.log(mentorAvailability);
+        console.log("mentor avail", listing2.mentor_user_id, mentorAvailability);
 
         const {
           data: { user },
@@ -181,8 +180,8 @@ export default function ListingPage({ params }: Props) {
       <ApplyButton
         listingId={listing.listing_id}
         mentorId={listing.mentor_user_id}
-        learnerAvailability={learnerAvailability ? learnerAvailability[0].availability_id : ''}
-        mentorAvailability={mentorAvailability ? mentorAvailability[0].availability_id : ''}
+        learnerAvailability={learnerAvailability && learnerAvailability.length > 0 ?  learnerAvailability[0].availability_id : ''}
+        mentorAvailability={mentorAvailability && mentorAvailability.length > 0 ? mentorAvailability[0].availability_id : ''}
       />{' '}
     </div>
   ) : (
