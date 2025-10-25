@@ -317,6 +317,11 @@ export default function ProfilePage({ params }: Props) {
                               newStatus: 'PLANNED',
                             }),
                           });
+                          const newMatches = matches;
+                          newMatches[
+                            newMatches.findIndex((match) => match.match_id == m.match_id)
+                          ].status = 'PLANNED';
+                          setMatches(newMatches);
                           alert('Mentorship request accepted!');
                         } catch (err) {
                           console.error(err);
