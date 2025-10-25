@@ -3,7 +3,7 @@
 # MiniMentor
 🌱 Micromentorship for the masses-- Connect, learn, and grow through personalized skill-building lesson and get the opportunity to help others achieve their goals as well.
 
-**Deployment URL:** [https://mini-mentor.netlify.app](https://mini-mentor.netlify.app)
+**Deployment URL:** [https://mini-mentor-eight.vercel.app](https://mini-mentor-eight.vercel.app)
 
 ## Overview
 A platform that bridges aspiring learners with experienced mentors through intelligent matching and seamless communication tools. Create mentorship listings, find perfect matches, and develop skills in a structured yet flexible environment.
