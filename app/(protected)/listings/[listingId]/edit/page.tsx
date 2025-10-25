@@ -32,7 +32,6 @@ export default async function EditListingPage({ params }: PageProps) {
     status: listing.status,
     end_date: listing.end_date ?? '',
     primary_skill_id: listing.primary_skill_id,
-    availability: mentorAvailability ?? [],
   };
 
   return (
