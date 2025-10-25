@@ -43,6 +43,27 @@ export function SkillSelector({
     fetchSkills();
   }, []);
 
+  async function createSkill(skillName: string) {
+    try {
+      const { data, error } = await supabase
+        .from('skills')
+        .insert({ name: skillName })
+        .select('*')
+        .single();
+      if (data) {
+        const tempSkills = skills;
+        tempSkills.push({ skill_id: data.skill_id, name: skillName });
+        alert('Skill created!');
+      } else {
+        console.error('Error creating skill:', error);
+        alert('Error creating skill.');
+      }
+    } catch (error) {
+      console.error('Error creating skill:', error);
+      alert('Error creating skill.');
+    }
+  }
+
   const fetchSkills = async () => {
     const { data, error } = await supabase.from('skills').select('*').order('name');
     if (error) console.error(error);
@@ -82,7 +103,7 @@ export function SkillSelector({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[250px] justify-between"
+          className="min-w-[250px] justify-between"
         >
           {searchValue ||
             (value ? skills.find((s) => s.skill_id === value)?.name : '') ||
@@ -99,7 +120,14 @@ export function SkillSelector({
             className="h-9"
           />
           <CommandList>
-            <CommandEmpty>No skill found.</CommandEmpty>
+            <CommandEmpty>
+              <div className="align-center flex flex-row items-center justify-center gap-2">
+                <p>No skill found.</p>
+                <Button variant="outline" onClick={() => createSkill(searchValue)}>
+                  Create skill
+                </Button>
+              </div>
+            </CommandEmpty>
             <CommandGroup>
               {skills
                 .filter((s) => s.name.toLowerCase().includes(searchValue.toLowerCase()))

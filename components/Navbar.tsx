@@ -32,7 +32,7 @@ export async function Navbar() {
     .limit(1)
     .single();
 
-  console.log('profileRes', profileRes, profileError);
+  // console.log('profileRes', profileRes, profileError);
 
   return (
     <nav className="flex h-16 w-full justify-center border-b border-b-foreground/10">
@@ -106,21 +106,21 @@ export async function Navbar() {
                 </Link>
               </NavigationMenuItem>
             )}
-            
-      <NavigationMenuItem>
-                <Link href="/profile/new" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Complete Profile
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
+
             <NavigationMenuItem>
+              <Link href="/my_profile" legacyBehavior passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Edit Profile
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            {/* <NavigationMenuItem>
               <Link href={"/profile/"+user?.id} legacyBehavior passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Dashboard
                 </NavigationMenuLink>
               </Link>
-            </NavigationMenuItem>
+            </NavigationMenuItem> */}
 
             {user && profileRes?.status == 'TEACHING' ? (
               <NavigationMenuItem>
@@ -178,17 +178,17 @@ export async function Navbar() {
                   GitHub
                 </Link>
               </SheetTrigger>
-           
-                <SheetTrigger asChild>
-                  <Link
-                    href="/profile/new"
-                    className="text-sm font-medium underline-offset-4 hover:underline"
-                    prefetch={false}
-                  >
-                    Complete Profile
-                  </Link>
-                </SheetTrigger>
-            
+
+              <SheetTrigger asChild>
+                <Link
+                  href="/profile/new"
+                  className="text-sm font-medium underline-offset-4 hover:underline"
+                  prefetch={false}
+                >
+                  Edit Profile
+                </Link>
+              </SheetTrigger>
+
               <SheetTrigger asChild>
                 <Link
                   href="/dashboard"

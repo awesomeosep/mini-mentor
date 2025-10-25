@@ -15,8 +15,8 @@ export async function POST(request: Request) {
     const listing_id = req.listing_id;
     const mentor_id = req.mentor_id;
     const learner_id = user!.id;
-    const learner_availability = req.learner_availability;
-    const mentor_availability = req.mentor_availability;
+    const learner_availability = req.learner_availability == "" ? null : req.learner_availability;
+    const mentor_availability = req.mentor_availability == "" ? null : req.mentor_availability;
 
     const match = {
       listing_id: listing_id,

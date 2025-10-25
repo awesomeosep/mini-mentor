@@ -1,14 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
-import { v4 as uuidv4 } from 'uuid';
-
-const AvailabilitySchema = z.object({
-  day_of_week: z.number().min(0).max(6),
-  start_time: z.string().regex(/^\d{2}:\d{2}$/),
-  end_time: z.string().regex(/^\d{2}:\d{2}$/),
-  format_note: z.string().optional(),
-});
 
 const ListingSchema = z.object({
   name: z.string().min(3),
@@ -16,7 +8,7 @@ const ListingSchema = z.object({
   status: z.enum(['OPEN', 'PAUSED', 'FULL', 'CLOSED']).default('OPEN'),
   end_date: z.string().optional(),
   primary_skill_id: z.string(),
-  availability: z.array(AvailabilitySchema).min(1),
+  format_notes: z.string()
 });
 
 export async function POST(req: Request) {
@@ -37,8 +29,8 @@ export async function POST(req: Request) {
 
   const { data: existingSkill, error: skillErr } = await supabase
     .from('skills')
-    .select('id')
-    .eq('id', parsed.data.primary_skill_id)
+    .select('skill_id')
+    .eq('skill_id', parsed.data.primary_skill_id)
     .single();
   if (skillErr || !existingSkill) {
     console.log('skill doesnt exist');
@@ -65,22 +57,12 @@ export async function POST(req: Request) {
       status: parsed.data.status,
       end_date: end_date_value,
       primary_skill_id: parsed.data.primary_skill_id,
+      format_notes: parsed.data.format_notes
     })
     .select()
     .single();
 
   if (listingErr) return NextResponse.json({ error: listingErr.message }, { status: 400 });
-
-  const availabilityRows = parsed.data.availability.map((slot) => ({
-    user_id: user.id,
-    day_of_week: slot.day_of_week,
-    start_time: slot.start_time,
-    end_time: slot.end_time,
-    format_note: slot.format_note ?? null,
-  }));
-
-  const { error: availErr } = await supabase.from('user_availability').insert(availabilityRows);
-  if (availErr) return NextResponse.json({ error: availErr.message }, { status: 400 });
 
   return NextResponse.json({ listing });
 }

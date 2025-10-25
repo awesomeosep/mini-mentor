@@ -2,11 +2,19 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 
+const AvailabilitySchema = z.object({
+  day_of_week: z.number().min(0).max(6),
+  start_time: z.string().regex(/^\d{2}:\d{2}$/),
+  end_time: z.string().regex(/^\d{2}:\d{2}$/),
+  format_note: z.string().optional(),
+});
+
 const ProfileSchema = z.object({
-  username: z.string().min(3).max(30),
-  name: z.string().min(1).max(60),
-  timezone: z.string().min(1),
-  status: z.enum(['TEACHING', 'LEARNING', 'PAUSED', 'MODERATING']),
+  name: z.string().min(2),
+  username: z.string().min(2),
+  timezone: z.string().min(2),
+  status: z.enum(['TEACHING', 'PAUSED', 'LEARNING', 'MODERATING']).default('LEARNING'),
+  availability: z.array(AvailabilitySchema).optional(),
 });
 
 export async function GET() {
@@ -21,7 +29,7 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json(data);
-} 
+}
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -40,13 +48,31 @@ export async function POST(req: Request) {
     .upsert(
       {
         userid: user.id,
-        ...parse.data,
+        name: parse.data.name,
+        username: parse.data.username,
+        timezone: parse.data.timezone,
+        status: parse.data.status,
         join_date: new Date().toISOString(),
+        email: user.email || null,
       },
       { onConflict: 'userid' },
     )
     .select()
     .single();
+
+  if (parse.data.availability && parse.data.availability.length > 0) {
+    const availabilityRows = parse.data.availability.map((slot) => ({
+      user_id: user.id,
+      day_of_week: slot.day_of_week,
+      start_time: slot.start_time,
+      end_time: slot.end_time,
+      format_note: slot.format_note ?? null,
+    }));
+
+    await supabase.from('user_availability').delete().eq('user_id', user.id);
+    const { error: availErr } = await supabase.from('user_availability').insert(availabilityRows);
+    if (availErr) return NextResponse.json({ error: availErr.message }, { status: 400 });
+  }
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json(data);

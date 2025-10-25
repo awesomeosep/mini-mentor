@@ -12,7 +12,6 @@ import {
 } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
 import {
   Select,
   SelectContent,
@@ -32,6 +31,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { SkillSelector } from '@/components/SkillSelector';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useRouter } from 'next/navigation';
 
 interface Listing {
   listing_id: string;
@@ -42,6 +42,7 @@ interface Listing {
 }
 
 export default function ListingBrowserPage() {
+  const router = useRouter();
   const [data, setData] = React.useState<Listing[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [search, setSearch] = React.useState('');
@@ -174,14 +175,14 @@ export default function ListingBrowserPage() {
             <TableBody>
               {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    <Link href={`/listings/${row.original.listing_id}`} className="contents">
+                  <TableRow onClick={() => router.push(`/listings/${row.original.listing_id}`)} key={row.id}>
+                    {/* <Link href={`/listings/${row.original.listing_id}`} className="contents"> */}
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
-                    </Link>
+                    {/* </Link> */}
                   </TableRow>
                 ))
               ) : (

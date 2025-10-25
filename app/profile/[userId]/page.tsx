@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
-    import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   params: Promise<{ userId: string }>;
@@ -21,12 +21,6 @@ type UserData = {
   ban_reason?: string | null;
   status?: string | null;
   email?: string | null;
-};
-
-type SupabaseUserLike = {
-  id?: string;
-  email?: string | null;
-  user_metadata?: { username?: string; name?: string } | null;
 };
 
 function formatDate(iso?: string | null) {
@@ -52,14 +46,15 @@ export default function ProfilePage({ params }: Props) {
   const [data, setData] = useState<UserData | null>(null);
   const [error, setError] = useState<unknown | null>(null);
   const [listingsForMatches, setListingsForMatches] = useState<Array<any>>([]);
-  const [learnerNamesForLearners, setLearnerNamesForLearners] = useState<Array<any>>([]);
-  const [mentorNamesForMentors, setMentorNamesForMentors] = useState<Array<any>>([]);
+  const [learnerNamesForLearners, setLearnerNamesForLearners] = useState<Array<UserData>>([]);
+  const [mentorNamesForMentors, setMentorNamesForMentors] = useState<Array<UserData>>([]);
   const [listings, setListings] = useState<Array<{
     listing_id: string;
     name: string;
     description?: string | null;
     status: string;
     mentor_user_id: string;
+    format_notes: string;
   }> | null>(null);
   const [matches, setMatches] = useState<Array<{
     match_id: string;
@@ -73,7 +68,8 @@ export default function ProfilePage({ params }: Props) {
   const [myUser, setMyUser] = useState<any>(null);
 
   const [loadingListings, setLoadingListings] = useState(false);
-const router = useRouter();
+  const [loadingMatches, setLoadingMatches] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     let mounted = true;
@@ -83,9 +79,9 @@ const router = useRouter();
       try {
         supabase.auth.getUser().then(async ({ data: { user } }) => {
           setMyUser(user);
-  if (user.id == (await params).userId) {
-  router.push('/profile/new')
-}
+          // if (user.id == (await params).userId) {
+          //   router.push('/profile/new');
+          // }
         });
         const res = await fetch('/api/profile/other', {
           method: 'POST',
@@ -101,6 +97,7 @@ const router = useRouter();
 
       // fetch listings
       setLoadingListings(true);
+      setLoadingMatches(true);
       const res = await fetch('/api/profile/listings', {
         method: 'POST',
         body: JSON.stringify({ mentor_user_id: (await params).userId }),
@@ -141,21 +138,23 @@ const router = useRouter();
             'userid',
             matchesData.map((m: any) => m.learner_id),
           );
-        const { data: mentorNamesForMentors, error: mentorsError } = await supabase
+        const { data: mentorNamesForMentors2, error: mentorsError } = await supabase
           .from('users')
           .select('*')
           .in('userid', matchesData.map((m: any) => m.mentor_id).flat());
-        console.log('formentors', mentorNamesForMentors, mentorsError);
+        console.log('formentors', mentorNamesForMentors2, mentorsError);
 
         console.log('forlearners', learnerNamesForLearners, learnersError);
         setLearnerNamesForLearners(learnerNamesForLearners ?? []);
-        setMentorNamesForMentors(mentorNamesForMentors ?? []);
+        setMentorNamesForMentors(mentorNamesForMentors2 ?? []);
 
         setListingsForMatches(listingsForMatchesData ?? []);
         console.log({ listingsForMatches });
 
         setMatches(matchesData);
+        setLoadingMatches(false);
       } catch (err) {
+        setLoadingMatches(false);
         console.error('failed to load matches', err);
       }
     })();
@@ -240,25 +239,31 @@ const router = useRouter();
                       <div className="text-sm text-muted-foreground">
                         {l.description || 'No description'}
                       </div>
+                      <div className="text-sm text-muted-foreground">
+                        {'Format notes: ' + (l.format_notes || 'None')}
+                      </div>
                     </div>
                     <div className="ml-4 flex flex-shrink-0 flex-row gap-4 p-4">
-                      <div className="rounded-full bg-muted px-2 py-1 text-xs">{l.status}</div>
-                      <Button
-                        onClick={() => {
-                          fetch('/api/match/', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                              listing_id: l.listing_id,
-                              mentor_id: l.mentor_user_id,
-                              learner_availability: null,
-                              mentor_availability: null,
-                              // learner_user_id: myUser,
-                            }),
-                          });
-                        }}
-                      >
-                        Request
-                      </Button>
+                      <div className="flex items-center rounded-full bg-muted px-2 py-1 text-xs">
+                        <p>{l.status}</p>
+                      </div>
+                      {myUser?.id !== l.mentor_user_id && (
+                        <Button
+                          onClick={() => {
+                            fetch('/api/match/', {
+                              method: 'POST',
+                              body: JSON.stringify({
+                                listing_id: l.listing_id,
+                                mentor_id: l.mentor_user_id,
+                                learner_availability: null,
+                                mentor_availability: null,
+                              }),
+                            });
+                          }}
+                        >
+                          Request
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -266,12 +271,13 @@ const router = useRouter();
             ))}
         </div>
       </div>
-      {/* Matches section */}
       <div className="mt-6">
         <h3 className="mb-3 text-lg font-semibold">Matches </h3>
-        {!matches && <p className="text-sm text-muted-foreground">No matches loaded</p>}
+        {(!matches || matches.length == 0) && !loadingMatches && <p>No matches found</p>}
+        {loadingMatches && <p>Loading matches…</p>}
         <div className="space-y-3">
           {matches &&
+            matches.length > 0 &&
             matches.map((m) => (
               <Card key={m.match_id}>
                 <CardContent>
@@ -293,7 +299,9 @@ const router = useRouter();
                       )}
                     </div>
                     <div className="ml-4 flex-shrink-0">
-                      <div className="rounded-full bg-muted px-2 py-1 text-xs">{m.status}</div>
+                      <div className="flex items-center rounded-full bg-muted px-2 py-1 text-xs">
+                        <p>{m.status}</p>
+                      </div>
                     </div>
                   </div>
                   {m.status === 'WAITING_MENTOR' && m.mentor_id == myUser?.id && (
@@ -301,13 +309,23 @@ const router = useRouter();
                       className="ml-2"
                       onClick={() => {
                         console.log(m.match_id);
-                        fetch('/api/match/', {
-                          method: 'PUT',
-                          body: JSON.stringify({
-                            matchId: m.match_id,
-                            newStatus: 'PLANNED',
-                          }),
-                        });
+                        try {
+                          fetch('/api/match/', {
+                            method: 'PUT',
+                            body: JSON.stringify({
+                              matchId: m.match_id,
+                              newStatus: 'PLANNED',
+                            }),
+                          });
+                          const newMatches = matches;
+                          newMatches[
+                            newMatches.findIndex((match) => match.match_id == m.match_id)
+                          ].status = 'PLANNED';
+                          setMatches(newMatches);
+                          alert('Mentorship request accepted!');
+                        } catch (err) {
+                          console.error(err);
+                        }
                       }}
                     >
                       Accept Request
@@ -316,10 +334,13 @@ const router = useRouter();
                   {m.learner_id == myUser?.id && m.status === 'PLANNED' && (
                     <div>
                       <p>Mentorship confirmed!</p>{' '}
-                      <p>
-                        {learnerNamesForLearners.find((l) => l.id == m.mentor_id)?.username +
-                          "'s email: "}
-                      </p>
+                      <div className="text-sm text-muted-foreground">
+                        <p>
+                          {mentorNamesForMentors.find((l) => l.userid == m.mentor_id)?.username +
+                            "'s email: " +
+                            mentorNamesForMentors.find((l) => l.userid == m.mentor_id)?.email}
+                        </p>
+                      </div>
                     </div>
                   )}
                 </CardContent>

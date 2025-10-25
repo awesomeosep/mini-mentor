@@ -169,7 +169,7 @@ export default function ProfilePage() {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={control}
               name="github_id"
               render={({ field }) => (
@@ -181,7 +181,7 @@ export default function ProfilePage() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
             <FormField
               control={control}
@@ -195,7 +195,7 @@ export default function ProfilePage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {['TEACHING', 'PAUSED', 'LEARNING', 'MODERATING'].map((s) => (
+                        {['TEACHING', 'LEARNING'].map((s) => (
                           <SelectItem key={s} value={s}>
                             {s}
                           </SelectItem>
