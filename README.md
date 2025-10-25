@@ -4,13 +4,16 @@
 **Deployment URL:** [https://mini-mentor.netlify.app](https://mini-mentor.netlify.app)
 
 ## Overview
-A platform that bridges aspiring learners with experienced mentors through intelligent matching and seamless communication tools. Create custom learning forms, find perfect matches, and develop skills in a structured yet flexible environment.
+A platform that bridges aspiring learners with experienced mentors through intelligent matching and seamless communication tools. Create mentorship listings, find perfect matches, and develop skills in a structured yet flexible environment.
 
-## What It Does
-- **Smart Matching**: Form-based system connects learners with ideal mentors
-- **Custom Learning Paths**: Create tailored learning objectives and curricula
-- **Direct Communication**: Built-in messaging for seamless mentor-learner interaction
-- **Skill Development**: Structured approach to acquiring new competencies
+## Features
+- Create a mentor or learner account
+- Enter profile, including experience/bio and weekly availability
+- Mentor can create a listing linked to a skill
+- Learner can search for a listing by skill or matching availabilities
+- Learner can submit an application to a listing
+- Mentor can accept a lsiting application
+- Learner can contact the mentor by email
 
 ## How We Built It
 **Frontend**:
@@ -25,6 +28,8 @@ A platform that bridges aspiring learners with experienced mentors through intel
 - Node.js
 - Next.js
 
+We initially wanted to create this project using a Python backend, since we were all familiar with Python, but it ended up beign much more difficult, so we switched to Nextjs. We also encountered challenges building the backend APIs, since much of that was new to our team.
+
 ## What's next for MiniMentor
 - Review/Messaging System (star reviews to improve mentor selection)
 - Advanced moderation systems (AI-powered)
@@ -32,10 +37,9 @@ A platform that bridges aspiring learners with experienced mentors through intel
 - Integration with platforms such as LinkedIn for skill-verification
 - Session Videoconferencing Scheduling/Management Tools
 - Stats-Tracking
-- 
 
 ## How to Run the Project
-1. Clone the repository: git clone https://github.com/matmanna/mini-mentor.git
+1. Clone the repository: git clone https://github.com/awesomeosep/mini-mentor.git
 2. Navigate to the project directory: cd mini-mentor
 3. Install dependancies: npm install
 4. Run the development server: nom run dev
