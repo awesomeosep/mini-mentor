@@ -32,7 +32,7 @@ We made this project for a hackathon and we wanted to create a platform where pe
 - Node.js
 - Next.js
 
-We initially wanted to create this project using a Python backend, since we were all familiar with Python, but it ended up beign much more difficult, so we switched to Nextjs. We also encountered challenges building the backend APIs, since much of that was new to our team.
+We initially wanted to create this project using a Python backend, since we were all familiar with Python, but it ended up beign much more difficult, so we switched to Nextjs. We also encountered challenges building the backend APIs, since much of that was new to our team, but we learned a lot with how to connect to a database like Supabase and link the frontend to the backend.
 
 ## What's next for MiniMentor
 - Review/Messaging System (star reviews to improve mentor selection)
