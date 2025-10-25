@@ -1,3 +1,5 @@
+[![Athena Award Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Faward.athena.hackclub.com%2Fapi%2Fbadge)](https://award.athena.hackclub.com?utm_source=readme)
+
 # MiniMentor
 🌱 Micromentorship for the masses-- Connect, learn, and grow through personalized skill-building lesson and get the opportunity to help others achieve their goals as well.
 
