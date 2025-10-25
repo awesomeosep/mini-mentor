@@ -8,6 +8,8 @@
 ## Overview
 A platform that bridges aspiring learners with experienced mentors through intelligent matching and seamless communication tools. Create mentorship listings, find perfect matches, and develop skills in a structured yet flexible environment.
 
+We made this project for a hackathon and we wanted to create a platform where people can learn and teach micro-skills in a more informal and personalized way than a class/course.
+
 ## Features
 - Create a mentor or learner account
 - Enter profile, including experience/bio and weekly availability
